@@ -154,5 +154,7 @@ div{
   margin: 20px auto; 
 }
 #about{
-    background-color:#9E8F8F;
+    background-color:white;
+    border-radius: 4px;
 }
+
