@@ -1,66 +1,89 @@
-const signupBtn = document.getElementById("signupBtn");
-const loginBtn = document.getElementById("loginBtn");
-const status = document.getElementById("status");
-const progressDisplay = document.getElementById("progress");
-const increaseBtn = document.getElementById("increaseProgress");
+// Track current logged-in user
+let currentUser = localStorage.getItem("currentUser") || null;
 
-let currentUser = null;
+// Function to update progress display
+function updateProgressDisplay() {
+    const progressEl = document.getElementById("progress");
+    if (!currentUser) {
+        progressEl.innerText = 0;
+        return;
+    }
 
-// Sign Up
-signupBtn.addEventListener("click", () => {
+    const userDataRaw = localStorage.getItem(currentUser);
+    if (!userDataRaw) {
+        progressEl.innerText = 0;
+        return;
+    }
+
+    const userData = JSON.parse(userDataRaw);
+    progressEl.innerText = userData.progress;
+}
+
+// Sign Up button
+document.getElementById("signupBtn").addEventListener("click", () => {
     const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value;
+    const password = document.getElementById("password").value.trim();
 
     if (!username || !password) {
-        status.innerText = "Please enter both username and password.";
+        document.getElementById("status").innerText = "Please enter both username and password.";
         return;
     }
 
     if (localStorage.getItem(username)) {
-        status.innerText = "Username already exists!";
+        document.getElementById("status").innerText = "Username already exists!";
         return;
     }
 
-    // Save user and initial progress
+    // Save new user with initial progress
     localStorage.setItem(username, JSON.stringify({ password: password, progress: 0 }));
-    status.innerText = "Account created successfully!";
+    currentUser = username;
+    localStorage.setItem("currentUser", username);
+
+    document.getElementById("status").innerText = "Account created and logged in!";
+    updateProgressDisplay();
 });
 
-// Log In
-loginBtn.addEventListener("click", () => {
+// Log In button
+document.getElementById("loginBtn").addEventListener("click", () => {
     const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value;
+    const password = document.getElementById("password").value.trim();
 
-    const userData = JSON.parse(localStorage.getItem(username));
-    if (!userData) {
-        status.innerText = "User not found!";
+    const userDataRaw = localStorage.getItem(username);
+    if (!userDataRaw) {
+        document.getElementById("status").innerText = "User not found!";
         return;
     }
 
+    const userData = JSON.parse(userDataRaw);
     if (userData.password !== password) {
-        status.innerText = "Incorrect password!";
+        document.getElementById("status").innerText = "Incorrect password!";
         return;
     }
 
     currentUser = username;
-    status.innerText = `Logged in as ${username}`;
-    progressDisplay.innerText = userData.progress;
+    localStorage.setItem("currentUser", username);
+    document.getElementById("status").innerText = `Logged in as ${username}`;
+    updateProgressDisplay();
 });
 
-// Increase Progress
-increaseBtn.addEventListener("click", () => {
+// Increase Progress button
+document.getElementById("increaseProgress").addEventListener("click", () => {
     if (!currentUser) {
-        status.innerText = "Please log in first!";
+        document.getElementById("status").innerText = "Please log in first!";
         return;
     }
 
     const userData = JSON.parse(localStorage.getItem(currentUser));
-    userData.progress += 10; // Increase progress by 10%
+    userData.progress += 10;
     if (userData.progress > 100) userData.progress = 100;
 
     localStorage.setItem(currentUser, JSON.stringify(userData));
-    progressDisplay.innerText = userData.progress;
+    updateProgressDisplay();
 });
+
+// Initialize progress on page load
+updateProgressDisplay();
+
 document.getElementById('getstarted').onclick = function(){
       document.getElementById('test1').classList.remove('hidden')
       this.style.display = 'none'
@@ -362,3 +385,4 @@ saveEntryBtn.onclick = () => {
   };
 
 });
+
