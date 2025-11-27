@@ -1,4 +1,67 @@
-  document.getElementById('getstarted').onclick = function(){
+const signupBtn = document.getElementById("signupBtn");
+const loginBtn = document.getElementById("loginBtn");
+const status = document.getElementById("status");
+const progressDisplay = document.getElementById("progress");
+const increaseBtn = document.getElementById("increaseProgress");
+
+let currentUser = null;
+
+// Sign Up
+signupBtn.addEventListener("click", () => {
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value;
+
+    if (!username || !password) {
+        status.innerText = "Please enter both username and password.";
+        return;
+    }
+
+    if (localStorage.getItem(username)) {
+        status.innerText = "Username already exists!";
+        return;
+    }
+
+    // Save user and initial progress
+    localStorage.setItem(username, JSON.stringify({ password: password, progress: 0 }));
+    status.innerText = "Account created successfully!";
+});
+
+// Log In
+loginBtn.addEventListener("click", () => {
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value;
+
+    const userData = JSON.parse(localStorage.getItem(username));
+    if (!userData) {
+        status.innerText = "User not found!";
+        return;
+    }
+
+    if (userData.password !== password) {
+        status.innerText = "Incorrect password!";
+        return;
+    }
+
+    currentUser = username;
+    status.innerText = `Logged in as ${username}`;
+    progressDisplay.innerText = userData.progress;
+});
+
+// Increase Progress
+increaseBtn.addEventListener("click", () => {
+    if (!currentUser) {
+        status.innerText = "Please log in first!";
+        return;
+    }
+
+    const userData = JSON.parse(localStorage.getItem(currentUser));
+    userData.progress += 10; // Increase progress by 10%
+    if (userData.progress > 100) userData.progress = 100;
+
+    localStorage.setItem(currentUser, JSON.stringify(userData));
+    progressDisplay.innerText = userData.progress;
+});
+document.getElementById('getstarted').onclick = function(){
       document.getElementById('test1').classList.remove('hidden')
       this.style.display = 'none'
   }
@@ -297,4 +360,5 @@ saveEntryBtn.onclick = () => {
   nextQuoteBtn.onclick = () => {
     showRandomQuote();
   };
+
 });
