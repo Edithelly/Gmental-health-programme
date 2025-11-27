@@ -1,4 +1,5 @@
-// Track current logged-in user
+document.addEventListener('DOMContentLoaded', () => {
+    // Track current logged-in user
 let currentUser = localStorage.getItem("currentUser") || null;
 
 // Function to update progress display
@@ -82,7 +83,8 @@ document.getElementById("increaseProgress").addEventListener("click", () => {
 });
 
 // Initialize progress on page load
-updateProgressDisplay();
+updateProgressDisplay();}
+
 
 document.getElementById('getstarted').onclick = function(){
       document.getElementById('test1').classList.remove('hidden')
@@ -385,4 +387,5 @@ saveEntryBtn.onclick = () => {
   };
 
 });
+
 
