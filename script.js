@@ -1,90 +1,3 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // Track current logged-in user
-let currentUser = localStorage.getItem("currentUser") || null;
-
-// Function to update progress display
-function updateProgressDisplay() {
-    const progressEl = document.getElementById("progress");
-    if (!currentUser) {
-        progressEl.innerText = 0;
-        return;
-    }
-
-    const userDataRaw = localStorage.getItem(currentUser);
-    if (!userDataRaw) {
-        progressEl.innerText = 0;
-        return;
-    }
-
-    const userData = JSON.parse(userDataRaw);
-    progressEl.innerText = userData.progress;
-}
-
-// Sign Up button
-document.getElementById("signupBtn").addEventListener("click", () => {
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value.trim();
-
-    if (!username || !password) {
-        document.getElementById("status").innerText = "Please enter both username and password.";
-        return;
-    }
-
-    if (localStorage.getItem(username)) {
-        document.getElementById("status").innerText = "Username already exists!";
-        return;
-    }
-
-    // Save new user with initial progress
-    localStorage.setItem(username, JSON.stringify({ password: password, progress: 0 }));
-    currentUser = username;
-    localStorage.setItem("currentUser", username);
-
-    document.getElementById("status").innerText = "Account created and logged in!";
-    updateProgressDisplay();
-});
-
-// Log In button
-document.getElementById("loginBtn").addEventListener("click", () => {
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value.trim();
-
-    const userDataRaw = localStorage.getItem(username);
-    if (!userDataRaw) {
-        document.getElementById("status").innerText = "User not found!";
-        return;
-    }
-
-    const userData = JSON.parse(userDataRaw);
-    if (userData.password !== password) {
-        document.getElementById("status").innerText = "Incorrect password!";
-        return;
-    }
-
-    currentUser = username;
-    localStorage.setItem("currentUser", username);
-    document.getElementById("status").innerText = `Logged in as ${username}`;
-    updateProgressDisplay();
-});
-
-// Increase Progress button
-document.getElementById("increaseProgress").addEventListener("click", () => {
-    if (!currentUser) {
-        document.getElementById("status").innerText = "Please log in first!";
-        return;
-    }
-
-    const userData = JSON.parse(localStorage.getItem(currentUser));
-    userData.progress += 10;
-    if (userData.progress > 100) userData.progress = 100;
-
-    localStorage.setItem(currentUser, JSON.stringify(userData));
-    updateProgressDisplay();
-});
-
-// Initialize progress on page load
-updateProgressDisplay();}
-
 
 document.getElementById('getstarted').onclick = function(){
       document.getElementById('test1').classList.remove('hidden')
@@ -387,5 +300,6 @@ saveEntryBtn.onclick = () => {
   };
 
 });
+
 
 
